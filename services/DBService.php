@@ -2,14 +2,16 @@
 namespace App\services;
 
 use App\entities\Entity;
+use App\repositories\TaskRepository;
 use App\repositories\UserRepository;
 
 /**
  * @property UserRepository userRepository
+ * @property TaskRepository taskRepository
  */
 class DBService
 {
-    protected array $repositories;
+    protected array $repositories = [];
 
     public function __construct(
         protected array $config
@@ -147,7 +149,7 @@ class DBService
 
     public function __get(string $name)
     {
-        if (strpos($name, 'Repository')) {
+        if (!strpos($name, 'Repository')) {
             throw new \Exception("Тут только репозитории вызываем, а не $name");
         }
 
@@ -156,7 +158,7 @@ class DBService
             throw new \Exception("Класс $name отсутствует");
         }
 
-        if ($this->repositories[$name]) {
+        if (empty($this->repositories[$name])) {
             $this->repositories[$name] = new $name($this);
         }
 

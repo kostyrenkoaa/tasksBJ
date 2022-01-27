@@ -1,4 +1,55 @@
+{% macro sort_macro(name, field, paginator) %}
+    <a href="{{ paginator.getSortString(field) }}" class="{{ paginator.getClassAction(field) }}">{{ name }}</a>
+{% endmacro %}
+
 {% extends 'layouts/home.twig' %}
 {% block body %}
-    {{ title }}
+
+    <form action="/task/create" method="post">
+        <div class="">
+            <div><input type="text" name="user_name" placeholder="user_name"></div>
+            <div>{% if errors.user_name  %} {{ errors.user_name }} {% endif %}</div>
+        </div>
+
+        <div class="">
+            <div><input type="text" name="email" placeholder="email"></div>
+            <div>{% if errors.email  %} {{ errors.email }} {% endif %}</div>
+        </div>
+
+        <div class="">
+            <div><textarea name="text" id="" cols="30" rows="10" placeholder="text"></textarea></div>
+            <div>{% if errors.text  %} {{ errors.text }} {% endif %}</div>
+        </div>
+
+        <input type="submit">
+    </form>
+
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>{{ _self.sort_macro('Имя пользователя', 'user_name', paginator) }}</th>
+            <th>{{ _self.sort_macro('Текст задачи', 'text', paginator) }}</th>
+            <th>{{ _self.sort_macro('Стаус', 'status', paginator) }}</th>
+        </tr>
+    {% for task in tasks %}
+        <tr>
+            <th>{{ task.email }}</th>
+            <th>{{ task.user_name }}</th>
+            <th>{{ task.text }}</th>
+            <th>{{ task.status }}</th>
+        </tr>
+    {% else %}
+        <div class="">
+            Список еще пуст
+        </div>
+    {% endfor %}
+    </table>
+
+
+    <div class="">
+        {% for link in paginator.getArrayPages() %}
+            <a href="{{ link }}">{{ loop.index }}</a>
+        {% endfor %}
+    </div>
+
 {% endblock %}

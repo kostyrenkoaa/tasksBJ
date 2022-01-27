@@ -5,7 +5,7 @@ return [
         'db' => 'tasks_bj',
         'host' => 'localhost',
         'user' => 'root',
-        'password' => 'secret',
+        'password' => '',
         'charset' => 'utf8'
     ]
 ];

@@ -1,13 +1,14 @@
 <?php
+
 namespace App\main;
 
-use Symfony\Component\HttpFoundation\Request;
+use App\exceptions\RedirectException;
+use App\services\SessionService;
 
 class Kernel
 {
     public function __construct(
-        protected array $config,
-        protected Request $request
+        protected Container $container
     )
     {
     }
@@ -22,7 +23,7 @@ class Kernel
             return '404';
         }
 
-        $controller = new $controller($this->request);
+        $controller = new $controller($this->container->getRequest());
         if (!method_exists($controller, $method)) {
             return '404';
         }
@@ -30,7 +31,7 @@ class Kernel
         $class = new \ReflectionClass($controller);
         $params = $class->getMethod($method)->getParameters();
         if (empty($params)) {
-            return call_user_func_array([$controller, $method], []);
+            return $this->callController($controller, $method, []);
         }
 
         $paramsForClass = [];
@@ -38,43 +39,36 @@ class Kernel
             $paramName = $param->getName();
             $paramClass = $param->getType()->getName();
 
-            $paramsForClass[] = $this->getParamsForConstruct($paramClass, $paramName);
+            $paramsForClass[] = $this->container->getParamsForConstruct($paramClass, $paramName);
         }
 
-        return call_user_func_array([$controller, $method], $paramsForClass);
+        return $this->callController($controller, $method, $paramsForClass);
     }
 
-    protected function getParamsForConstruct($className, $paramName)
+    protected function callController(object $controller, string $method, $paramsForClass)
     {
-        if (!class_exists($className) && isset($this->config[$paramName])) {
-            return $this->config[$paramName];
+        try {
+            return call_user_func_array([$controller, $method], $paramsForClass);
+        } catch (RedirectException $redirectException) {
+            $errors = $redirectException->getErrors();
+            if (!empty($errors)) {
+                $this->container->getSessionService()->setFlashErrors($errors);
+            }
+
+            header('Location: ' . $redirectException->getUrl());
+            return '';
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
         }
-
-        $class = new \ReflectionClass($className);
-        $constructor = $class->getConstructor();
-        if (empty($constructor)) {
-            return new $className();
-        }
-
-        $params = $constructor->getParameters();
-
-        if (empty($params)) {
-            return new $className();
-        }
-
-        $paramsForClass = [];
-        foreach ($params as $param) {
-            $paramNameForClass = $param->getName();
-            $paramClassForClass = $param->getType()->getName();
-            $paramsForClass[] = $this->getParamsForConstruct($paramClassForClass, $paramNameForClass);
-        }
-
-        return $class->newInstanceArgs($paramsForClass);
     }
 
     protected function getControllersParams(): array
     {
-        $requestUri = $this->request->getRequestUri();
+        $requestUri = $this->container->getRequest()->getRequestUri();
+        $startParams = strpos($requestUri, '?');
+        if ($startParams !== false) {
+            $requestUri = substr($requestUri, 0, $startParams);
+        }
         $params = explode('/', $requestUri);
         $baseControllerName = 'home';
         if (!empty($params[1])) {

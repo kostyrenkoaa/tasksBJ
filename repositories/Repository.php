@@ -1,6 +1,7 @@
 <?php
 namespace App\repositories;
 
+use App\dto\PaginatorDTO;
 use App\entities\Entity;
 use App\services\DBService;
 
@@ -29,6 +30,12 @@ abstract class Repository
      */
     abstract protected function getTableName();
 
+    public function getNewEntity(): Entity
+    {
+        $entity = $this->getEntityClass();
+        return new $entity();
+    }
+
     /**
      * Получение конкретной записи
      *
@@ -51,6 +58,18 @@ abstract class Repository
     {
         $table = $this->getTableName();
         $sql = "SELECT * FROM {$table}";
+        return $this->db->getObjects($sql, $this->getEntityClass());
+    }
+
+    public function getAllByPagination(PaginatorDTO $paginatorDTO)
+    {
+        $table = $this->getTableName();
+        $offset = (int)$paginatorDTO->offset;
+        $countInPage = (int)$paginatorDTO->countInPage;
+        $sortBy = $paginatorDTO->sortBy;
+        $direction = $paginatorDTO->direction;
+
+        $sql = "SELECT * FROM {$table} ORDER BY {$sortBy} {$direction} LIMIT $offset, $countInPage";
         return $this->db->getObjects($sql, $this->getEntityClass());
     }
 
@@ -133,5 +152,12 @@ abstract class Repository
         } else {
             $this->update($entity);
         }
+    }
+
+    public function getCount()
+    {
+        $table = $this->getTableName();
+        $sql = "SELECT COUNT(*) AS `count` FROM {$table}";
+        return $this->db->find($sql);
     }
 }

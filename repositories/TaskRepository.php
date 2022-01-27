@@ -5,8 +5,10 @@ use App\entities\Task;
 
 /**
  * @method Task getOne($id)
+ * @method Task[] getAll()
+ * @method Task getNewEntity()
  */
-class TasksRepository extends Repository
+class TaskRepository extends Repository
 {
     public function getTableName(): string
     {

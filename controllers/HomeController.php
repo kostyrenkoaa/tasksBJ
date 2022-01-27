@@ -1,17 +1,35 @@
 <?php
+
 namespace App\controllers;
 
+use App\forms\GetTasksForm;
+use App\services\PaginatorService;
+use App\services\SessionService;
+use App\services\TaskService;
 use App\services\TwigRenderService;
-use App\services\UserService;
 
 class HomeController extends Controller
 {
     public function indexAction(
-        UserService $userService,
-        TwigRenderService $renderService
+        GetTasksForm $getTasksForm,
+        TaskService       $taskService,
+        TwigRenderService $renderService,
+        SessionService $sessionService,
+        PaginatorService $paginatorService,
 
-    )
+    ): string
     {
-        return $renderService->render('home', $userService->getInfo());
+        $paginatorDTO = $paginatorService->getData(
+            $paginatorService->getDB()->taskRepository, $getTasksForm->getDataForm()
+        );
+
+        return $renderService->render(
+            'home',
+            [
+                'tasks' => $taskService->getTasks($paginatorDTO),
+                'errors' => $sessionService->getFlashErrors() ?: [],
+                'paginator' => $paginatorDTO,
+            ]
+        );
     }
 }

@@ -14,4 +14,9 @@ class Service
     {
         return $this->sessionService->getSession();
     }
+
+    public function getDB()
+    {
+        return $this->db;
+    }
 }
