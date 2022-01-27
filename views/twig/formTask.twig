@@ -1,0 +1,27 @@
+<form action="{{ url }}" method="post">
+    <div class="">
+        <div><input type="text" name="user_name" placeholder="user_name" value="{{ task.user_name }}"></div>
+        <div>{% if errors.user_name  %} {{ errors.user_name }} {% endif %}</div>
+    </div>
+
+    <div class="">
+        <div><input type="text" name="email" placeholder="email" value="{{ task.email }}"></div>
+        <div>{% if errors.email  %} {{ errors.email }} {% endif %}</div>
+    </div>
+
+    <div class="">
+        <div><textarea name="text" id="" cols="30" rows="10" placeholder="text">{{ task.text }}</textarea></div>
+        <div>{% if errors.text  %} {{ errors.text }} {% endif %}</div>
+    </div>
+
+    {% if isLogin %}
+        <div class="">
+            <label for="">
+                <input name="is_done" type="checkbox" {% if task.status == 'done' %} checked {% endif %}>
+                Выполнена
+            </label>
+        </div>
+    {% endif %}
+
+    <input type="submit">
+</form>

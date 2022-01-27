@@ -5,6 +5,9 @@ namespace App\forms;
 
 use App\dto\CreateTaskDTO;
 
+/**
+ * @method CreateTaskDTO getDataForm()
+ */
 class CreateTaskForm extends Form
 {
     protected array $validateRules = [

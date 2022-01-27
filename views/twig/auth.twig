@@ -1,0 +1,18 @@
+{% extends 'layouts/home.twig' %}
+{% block body %}
+
+    <form action="/auth/login" method="post">
+        <div class="">
+            <div><input type="text" name="login" placeholder="login"></div>
+            <div>{% if errors.login  %} {{ errors.login }} {% endif %}</div>
+        </div>
+
+        <div class="">
+            <div><input type="password" name="password" placeholder="password"></div>
+            <div>{% if errors.password  %} {{ errors.password }} {% endif %}</div>
+        </div>
+
+        <input type="submit">
+    </form>
+
+{% endblock %}

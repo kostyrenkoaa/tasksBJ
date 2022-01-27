@@ -3,7 +3,6 @@
 namespace App\main;
 
 use App\exceptions\RedirectException;
-use App\services\SessionService;
 
 class Kernel
 {

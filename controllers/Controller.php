@@ -2,6 +2,8 @@
 namespace App\controllers;
 
 use App\exceptions\RedirectException;
+use App\services\AuthService;
+use App\services\SessionService;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class Controller
@@ -18,6 +20,16 @@ abstract class Controller
     protected function ifIsNotPostRedirect($url = '/')
     {
          if (!$this->request->isMethod('POST')) {
+             $this->redirect($url);
+         }
+    }
+
+    /**
+     * @throws RedirectException
+     */
+    protected function ifIsNotAdminRedirect(SessionService $sessionService, $url = '/')
+    {
+         if (!$sessionService->isLogin()) {
              $this->redirect($url);
          }
     }

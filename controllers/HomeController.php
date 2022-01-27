@@ -29,6 +29,9 @@ class HomeController extends Controller
                 'tasks' => $taskService->getTasks($paginatorDTO),
                 'errors' => $sessionService->getFlashErrors() ?: [],
                 'paginator' => $paginatorDTO,
+                'isLogin' => $sessionService->isLogin(),
+                'url' => '/task/update',
+                'task' => $taskService->getDB()->taskRepository->getNewEntity()
             ]
         );
     }

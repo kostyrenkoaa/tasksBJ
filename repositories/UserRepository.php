@@ -17,4 +17,15 @@ class UserRepository extends Repository
     {
         return User::class;
     }
+
+    /**
+     * @param $login
+     * @return \App\entities\Entity|null|User
+     */
+    public function getUserByLogin($login)
+    {
+        $table = $this->getTableName();
+        $sql = "SELECT * FROM {$table} WHERE login = :login";
+        return $this->db->getObject($sql, $this->getEntityClass(), [':login' => $login]);
+    }
 }
