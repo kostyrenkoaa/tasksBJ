@@ -11,4 +11,5 @@ class Task extends Entity
     public $text;
     public $status;
     public $email;
+    public $is_edit;
 }

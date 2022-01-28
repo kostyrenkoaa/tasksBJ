@@ -7,7 +7,14 @@ use \Symfony\Component\HttpFoundation\Request;
 
 class Container
 {
+    /**
+     * @var array Для сохранения компонентов
+     */
     protected array $components = [];
+
+    /**
+     * @var string Имя класса для работы с запросом
+     */
     protected string $requestClassName;
 
     public function __construct(
@@ -17,6 +24,11 @@ class Container
         $this->initComponents();
     }
 
+    /**
+     * Инициализация базовых компонентов
+     *
+     * @return void
+     */
     protected function initComponents()
     {
         $request = Request::createFromGlobals();
@@ -25,6 +37,11 @@ class Container
         $this->components[$this->requestClassName] = $request;
     }
 
+    /**
+     * Инициализирует и возвращает класс сессии
+     *
+     * @return SessionService|mixed
+     */
     public function getSessionService()
     {
         if (empty($this->components[SessionService::class])) {
@@ -35,6 +52,8 @@ class Container
     }
 
     /**
+     * Возвращает объект запроса
+     *
      * @return Request
      */
     public function getRequest(): Request
@@ -42,7 +61,14 @@ class Container
         return $this->components[$this->requestClassName];
     }
 
-
+    /**
+     * Возвращает параметры для конструктора указанного класса
+     *
+     * @param $className
+     * @param $paramName
+     * @return mixed|object|null
+     * @throws \ReflectionException
+     */
     public function getParamsForConstruct($className, $paramName)
     {
         if (!class_exists($className) && isset($this->config[$paramName])) {
@@ -52,7 +78,6 @@ class Container
         if (isset($this->components[$className])) {
             return $this->components[$className];
         }
-
 
         $class = new \ReflectionClass($className);
         $constructor = $class->getConstructor();

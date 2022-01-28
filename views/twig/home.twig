@@ -4,51 +4,68 @@
 
 {% extends 'layouts/home.twig' %}
 {% block body %}
+    <div class="row align-r">
+        {% if isLogin %}
+            <a href="/auth/logout">Выход</a>
+        {% else %}
+            <a href="/auth">Авторизоваться</a>
+        {% endif %}
+    </div>
 
-    {% if isLogin %}
-        <a href="/auth/logout">Выход</a>
-    {% else %}
-        <a href="/auth">Авторизоваться</a>
-    {% endif %}
-
-    {% if not isLogin %}
-        {{ include('formTask.twig') }}
-    {% endif %}
-
-    <table>
-        <tr>
-            <th>Email</th>
-            <th>{{ _self.sort_macro('Имя пользователя', 'user_name', paginator) }}</th>
-            <th>{{ _self.sort_macro('Текст задачи', 'text', paginator) }}</th>
-            <th>{{ _self.sort_macro('Стаус', 'status', paginator) }}</th>
-            {% if isLogin %}
-                <th></th>
-            {% endif %}
-
-
-        </tr>
-    {% for task in tasks %}
-        <tr>
-            <th>{{ task.email }}</th>
-            <th>{{ task.user_name }}</th>
-            <th>{{ task.text }}</th>
-            <th>{{ task.status }}</th>
-            {% if isLogin %}
-                <th><a href="/task/form/?id={{ task.id }}">Изменить</a></th>
-            {% endif %}
-        </tr>
-    {% else %}
-        <div class="">
-            Список еще пуст
+    {% if msg %}
+        <div class="alert alert-success" role="alert">
+            {{ msg }}
+            <div class="align-r">
+                <button type="button" class="btn-close alert-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
-    {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        {% if not isLogin %}
+            <h2>Создание задачи</h2>
+            {{ include('formTask.twig') }}
+        {% endif %}
+    </div>
+
+    <h2>Список задач</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">{{ _self.sort_macro('Email', 'email', paginator) }}</th>
+            <th scope="col">{{ _self.sort_macro('Имя пользователя', 'user_name', paginator) }}</th>
+            <th scope="col">Текст задачи</th>
+            <th scope="col">{{ _self.sort_macro('Стаус', 'status', paginator) }}</th>
+            {% if isLogin %}
+                <th scope="col"></th>
+            {% endif %}
+        </tr>
+        </thead>
+        {% for task in tasks %}
+            <tr {% if task.status == 'done' %} class="alert alert-success" {% endif %}>
+                <th>{{ task.email }}</th>
+                <th>{{ task.user_name }}</th>
+                <th>
+                    {{ task.text }}
+                    {% if task.is_edit %}
+                        <div class="annotate-edit">(Текст изменен администратором)</div>
+                    {% endif %}
+                </th>
+                <th>{{ task.status }}</th>
+                {% if isLogin %}
+                    <th><a href="/task/form/?id={{ task.id }}">Изменить</a></th>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="{% if isLogin %} 5 {% else %} 4 {% endif %}">Список еще пуст</td>
+            </tr>
+        {% endfor %}
     </table>
 
-
-    <div class="">
+    <div class="align-r">
         {% for link in paginator.getArrayPages() %}
             <a href="{{ link }}">{{ loop.index }}</a>
         {% endfor %}
     </div>
-
 {% endblock %}

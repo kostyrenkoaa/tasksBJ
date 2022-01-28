@@ -11,16 +11,31 @@ class PaginatorDTO extends DTO
     public $countInPage = 3;
     public $offset = 0;
 
+    /**
+     * Разрешенные направления сортировок
+     *
+     * @return string[]
+     */
     public function getDirections()
     {
         return ['DESC', 'ASC'];
     }
 
+    /**
+     * Разрешенные поля для сортировок
+     *
+     * @return string[]
+     */
     public function getSortBys()
     {
         return ['id', 'user_name', 'email', 'status'];
     }
 
+    /**
+     * Возвращает список ссылок для пагинации
+     *
+     * @return array
+     */
     public function getArrayPages()
     {
         $array = [];
@@ -32,6 +47,12 @@ class PaginatorDTO extends DTO
         return $array;
     }
 
+    /**
+     * Возвращает ссылку для сортировки по указанному полю
+     *
+     * @param $field
+     * @return string
+     */
     public function getSortString($field)
     {
         $direction = 'DESC';
@@ -42,6 +63,12 @@ class PaginatorDTO extends DTO
         return "?page={$this->page}&direction={$direction}&sortBy={$field}";
     }
 
+    /**
+     * Возвращает активный класс по указанному полю
+     *
+     * @param $field
+     * @return string
+     */
     public function getClassAction($field)
     {
         if ($field == $this->sortBy) {

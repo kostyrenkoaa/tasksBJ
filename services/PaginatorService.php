@@ -7,6 +7,13 @@ use App\repositories\Repository;
 
 class PaginatorService extends Service
 {
+    /**
+     * Возвращает обработанные безопасные данные для работы пагинатора
+     *
+     * @param Repository $repository
+     * @param PaginatorDTO $paginatorDTO
+     * @return PaginatorDTO
+     */
     public function getData(Repository $repository, PaginatorDTO $paginatorDTO)
     {
         $data = $repository->getCount();

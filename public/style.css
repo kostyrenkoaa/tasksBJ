@@ -1,0 +1,17 @@
+.align-r {
+    text-align: right;
+}
+.check-r {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.alert-close {
+    position: absolute;
+    right: 6px;
+    top: 15px;
+}
+.annotate-edit {
+    font-size: 10px;
+    color: #f47272;
+}

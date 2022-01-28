@@ -12,37 +12,61 @@ use App\services\TwigRenderService;
 class TaskController extends Controller
 {
     /**
+     * Создание таска
+     *
      * @param CreateTaskForm $createTaskForm
      * @param TaskService $taskService
-     * @return mixed
+     * @param SessionService $sessionService
      * @throws RedirectException
      */
-    public function createAction(CreateTaskForm $createTaskForm, TaskService $taskService): mixed
+    public function createAction(
+        CreateTaskForm $createTaskForm,
+        TaskService $taskService,
+        SessionService $sessionService,
+    )
     {
         $this->ifIsNotPostRedirect();
         $this->ifHasErrorsRedirect($createTaskForm->getErrorsForm());
         $taskService->save($createTaskForm->getDataForm());
-
+        $sessionService->setFlashMSG('Задача успешно создана');
         $this->redirect();
     }
 
+    /**
+     * Обновление таска
+     *
+     * @param SessionService $sessionService
+     * @param UpdateTaskForm $updateTaskForm
+     * @param TaskService $taskService
+     * @throws RedirectException
+     */
     public function updateAction(
         SessionService $sessionService,
         UpdateTaskForm $updateTaskForm,
-        TaskService $taskService
-    ): mixed
+        TaskService    $taskService
+    )
     {
         $this->ifIsNotPostRedirect();
         $this->ifIsNotAdminRedirect($sessionService);
         $updateTaskDTO = $updateTaskForm->getDataForm();
         $this->ifHasErrorsRedirect($updateTaskForm->getErrorsForm(), '/task/form/?id=' . $updateTaskDTO->id);
         $taskService->update($updateTaskDTO);
+        $sessionService->setFlashMSG('Задача успешно изменена');
         $this->redirect();
     }
 
+    /**
+     * Форма изменения таска
+     *
+     * @param SessionService $sessionService
+     * @param TaskService $taskService
+     * @param TwigRenderService $renderService
+     * @return string
+     * @throws RedirectException
+     */
     public function formAction(
-        SessionService $sessionService,
-        TaskService $taskService,
+        SessionService    $sessionService,
+        TaskService       $taskService,
         TwigRenderService $renderService
     )
     {

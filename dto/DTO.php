@@ -4,5 +4,4 @@ namespace App\dto;
 
 class DTO
 {
-
 }

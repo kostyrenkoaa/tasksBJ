@@ -10,9 +10,13 @@ use Webmozart\Assert\Assert;
 abstract class Form
 {
     protected DTO $formData;
-    protected array $preparingDataRules = [];
     protected $errors;
 
+    /**
+     * Правила валидации запроса
+     *
+     * @var array
+     */
     protected array $validateRules = [];
 
     public function __construct(
@@ -104,19 +108,6 @@ abstract class Form
             $this->formData->$key = $valueForAdd;
         }
 
-        if (!empty($this->preparingDataRules)) {
-            $this->prepareData();
-        }
-
         return $this->formData;
-    }
-
-    protected function prepareData()
-    {
-        foreach ($this->preparingDataRules as $property => $method) {
-            if (method_exists($this, $method)) {
-                $this->formData->$property = $this->$method($this->formData->$property);
-            }
-        }
     }
 }

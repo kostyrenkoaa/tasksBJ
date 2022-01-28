@@ -9,31 +9,42 @@ use App\services\TwigRenderService;
 
 class AuthController extends Controller
 {
+    /**
+     * Форма для авторизации пользователя
+     *
+     * @param TwigRenderService $renderService
+     * @param SessionService $sessionService
+     * @return string
+     */
     public function indexAction(
         TwigRenderService $renderService,
-        SessionService $sessionService
+        SessionService    $sessionService
 
     ): string
     {
-        $msg = '';
-        $errors = $sessionService->getFlashErrors() ?: [];
-        if (!empty($errors['msg'])) {
-            $msg = $errors['msg'];
+        if ($sessionService->isLogin()) {
+            $this->redirect();
         }
-
         return $renderService->render(
             'auth',
             [
-                'msg' => $msg,
-                'errors' => $errors
+                'errors' => $sessionService->getFlashErrors() ?: [],
             ]
         );
     }
 
+    /**
+     * Авторизация пользователя
+     *
+     * @param LoginForm $loginForm
+     * @param AuthService $authService
+     * @return string
+     * @throws \App\exceptions\RedirectException
+     */
     public function loginAction(
-        LoginForm $loginForm,
+        LoginForm   $loginForm,
         AuthService $authService
-    )
+    ): string
     {
         $this->ifIsNotPostRedirect();
         $this->ifHasErrorsRedirect($loginForm->getErrorsForm(), '/auth');
@@ -45,6 +56,13 @@ class AuthController extends Controller
         $this->redirect('/auth', ['login' => 'Не верный логин или пароль']);
     }
 
+    /**
+     * Выход из сессии
+     *
+     * @param SessionService $sessionService
+     * @return void
+     * @throws \App\exceptions\RedirectException
+     */
     public function logoutAction(
         SessionService $sessionService
     )

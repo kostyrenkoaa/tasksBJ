@@ -2,7 +2,6 @@
 
 namespace App\forms;
 
-
 use App\dto\LoginDTO;
 
 /**

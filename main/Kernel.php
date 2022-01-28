@@ -13,6 +13,8 @@ class Kernel
     }
 
     /**
+     * Начало работы приложения
+     *
      * @throws \Exception
      */
     public function start()
@@ -44,6 +46,14 @@ class Kernel
         return $this->callController($controller, $method, $paramsForClass);
     }
 
+    /**
+     * Вызов контроллера
+     *
+     * @param object $controller
+     * @param string $method
+     * @param $paramsForClass
+     * @return false|mixed|string
+     */
     protected function callController(object $controller, string $method, $paramsForClass)
     {
         try {
@@ -61,6 +71,11 @@ class Kernel
         }
     }
 
+    /**
+     * Получение параметров для определения вызываемого контроллера и метода в нем
+     *
+     * @return string[]
+     */
     protected function getControllersParams(): array
     {
         $requestUri = $this->container->getRequest()->getRequestUri();

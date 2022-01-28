@@ -7,5 +7,4 @@ namespace App\entities;
  */
 abstract class Entity
 {
-
 }

@@ -6,8 +6,8 @@ use App\repositories\TaskRepository;
 use App\repositories\UserRepository;
 
 /**
- * @property UserRepository userRepository
- * @property TaskRepository taskRepository
+ * @property UserRepository $UserRepository
+ * @property TaskRepository $TaskRepository
  */
 class DBService
 {
@@ -126,6 +126,8 @@ class DBService
     }
 
     /**
+     * Выполняет запрос к базе
+     *
      * @param string $sql
      * @param array $params
      * @return int
@@ -147,6 +149,13 @@ class DBService
         return $this->getConnection()->lastInsertId();
     }
 
+    /**
+     * Используется для получение репозиториев
+     *
+     * @param string $name
+     * @return mixed
+     * @throws \Exception
+     */
     public function __get(string $name)
     {
         if (!strpos($name, 'Repository')) {

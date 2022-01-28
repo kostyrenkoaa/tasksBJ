@@ -154,6 +154,11 @@ abstract class Repository
         }
     }
 
+    /**
+     * Возвращает массив с данными о количестве строк в таблице
+     *
+     * @return array
+     */
     public function getCount()
     {
         $table = $this->getTableName();

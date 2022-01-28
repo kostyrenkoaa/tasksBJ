@@ -2,7 +2,6 @@
 
 namespace App\forms;
 
-
 use App\dto\CreateTaskDTO;
 
 /**
@@ -12,7 +11,7 @@ class CreateTaskForm extends Form
 {
     protected array $validateRules = [
         'email' => [
-            'email' => 'Емайл не валиден',
+            'email' => 'Email не валиден',
         ],
         'user_name' => [
             'stringNotEmpty' => 'Имя пользователя не должно быть пустым'

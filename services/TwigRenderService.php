@@ -8,6 +8,8 @@ class TwigRenderService
     protected Environment $renderer;
 
     /**
+     * Возвращает отрендеренный шаблон наполненный данными
+     *
      * @param $template
      * @param $params
      * @return string
@@ -19,6 +21,11 @@ class TwigRenderService
         return $this->getRenderer()->render($template, $params);
     }
 
+    /**
+     * Возвращает класс для реализации рендеренга
+     *
+     * @return Environment
+     */
     protected function getRenderer(): Environment
     {
         if (empty($this->renderer)) {

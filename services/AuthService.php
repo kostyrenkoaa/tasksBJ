@@ -1,16 +1,20 @@
 <?php
 namespace App\services;
 
-use App\dto\CreateTaskDTO;
 use App\dto\LoginDTO;
-use App\dto\PaginatorDTO;
 use App\entities\User;
 
 class AuthService extends Service
 {
+    /**
+     * Совершает вход пользователя
+     *
+     * @param LoginDTO $loginDTO
+     * @return bool
+     */
     public function login(LoginDTO $loginDTO)
     {
-        $user = $this->db->userRepository->getUserByLogin($loginDTO->login);
+        $user = $this->db->UserRepository->getUserByLogin($loginDTO->login);
         if (!$this->isSuccessLogin($user, $loginDTO)) {
             return false;
         }
@@ -19,6 +23,13 @@ class AuthService extends Service
         return true;
     }
 
+    /**
+     * Проверяет переданные данные на соответствие пользователю
+     *
+     * @param User|bool $user
+     * @param LoginDTO $loginDTO
+     * @return bool
+     */
     protected function isSuccessLogin(User|bool $user, LoginDTO $loginDTO)
     {
         if (empty($user) || empty($user->password)) {
