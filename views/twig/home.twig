@@ -22,10 +22,8 @@
     {% endif %}
 
     <div class="row">
-        {% if not isLogin %}
-            <h2>Создание задачи</h2>
-            {{ include('formTask.twig') }}
-        {% endif %}
+        <h2>Создание задачи</h2>
+        {{ include('formTask.twig') }}
     </div>
 
     <h2>Список задач</h2>
@@ -35,7 +33,7 @@
             <th scope="col">{{ _self.sort_macro('Email', 'email', paginator) }}</th>
             <th scope="col">{{ _self.sort_macro('Имя пользователя', 'user_name', paginator) }}</th>
             <th scope="col">Текст задачи</th>
-            <th scope="col">{{ _self.sort_macro('Стаус', 'status', paginator) }}</th>
+            <th scope="col">{{ _self.sort_macro('Статус', 'status', paginator) }}</th>
             {% if isLogin %}
                 <th scope="col"></th>
             {% endif %}
